@@ -1,0 +1,164 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import DisplayProducts from "./DisplayProducts";
+import ViewCart from "./ViewCart";
+
+function App() {
+  return (
+    <Router>
+      <div
+        style={{
+          background: "linear-gradient(to right, #0052b0, #520f41)",
+          minHeight: "950px",
+          color: "white",
+          padding: "20px",
+        }}
+      >
+        <h1>Super Nova Fashion Clothings</h1>
+
+        <nav style={{ marginBottom: "20px" }}>
+          <Link to="/displayProducts" style={{ marginRight: "20px", fontSize: "1.3em", color: "white" }}>
+            Display Products
+          </Link>
+
+          <Link to="/viewCart" style={{ fontSize: "1.3em", color: "white" }}>
+            View Cart
+          </Link>
+        </nav>
+
+        <Routes>
+          <Route path="/displayProducts" element={<DisplayProducts />} />
+          <Route path="/viewCart" element={<ViewCart />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+
+
+
+
+import React from "react";
+import products from "./products.json";
+import { addToCart } from "./Service";
+
+function DisplayProducts() {
+  const cartHandler = (index) => {
+    addToCart(index);
+  };
+
+  return (
+    <div>
+      <dl>
+        {products.map((product, index) => (
+          <div key={index}>
+            <dt style={{ fontWeight: "bold", backgroundColor: "#ddd" }}>
+              {product.title}
+            </dt>
+
+            <dd>Product Id: {product.id}</dd>
+            <dd>Price: {product.price}</dd>
+
+            <dd>
+              Available Sizes:
+              <table border="1">
+                <tbody>
+                  <tr>
+                    {product.availableSizes.map((size, i) => (
+                      <td key={i}>{size}</td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </dd>
+
+            <dd>
+              <button
+                style={{ float: "right" }}
+                onClick={cartHandler.bind(this, index)}
+              >
+                Add To Cart
+              </button>
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <p>*Products cannot be returned nor exchanged once purchased.</p>
+    </div>
+  );
+}
+
+export default DisplayProducts;
+
+
+
+
+import React from "react";
+import { viewCart } from "./Service";
+
+function ViewCart() {
+  const cart = viewCart();
+
+  return (
+    <div>
+      {cart.length === 0 ? (
+        <p>There are no items in the Cart list that can be shown.</p>
+      ) : (
+        <dl>
+          {cart.map((item, index) => (
+            <div key={index}>
+              <dt>{item.title}</dt>
+              <dd>Product Id: {item.id}</dd>
+              <dd>Price: {item.price}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  );
+}
+
+export default ViewCart;
+
+
+import products from "./products.json";
+
+let cartList = [];
+
+export const addToCart = (index) => {
+  cartList.push(products[index]);
+  alert("Product added to cart");
+};
+
+export const viewCart = () => {
+  return cartList;
+};
+
+
+
+[
+  {
+    "id": 1,
+    "title": "T-Shirt",
+    "price": 500,
+    "availableSizes": ["S", "M", "L"]
+  },
+  {
+    "id": 2,
+    "title": "Jeans",
+    "price": 1200,
+    "availableSizes": ["M", "L", "XL"]
+  },
+  {
+    "id": 3,
+    "title": "Jacket",
+    "price": 2500,
+    "availableSizes": ["L", "XL"]
+  }
+]
+
+
+
